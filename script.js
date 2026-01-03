@@ -6,7 +6,6 @@ const visibleEnd = 3;
 let cells = [];
 let gameOver = false;
 
-/* ---------- СОЗДАНИЕ ПОЛЯ ---------- */
 for (let r = 0; r < size; r++) {
     for (let c = 0; c < size; c++) {
         const cell = document.createElement('div');
@@ -23,12 +22,12 @@ for (let r = 0; r < size; r++) {
     }
 }
 
-/* ---------- ВСПОМОГАТЕЛЬНЫЕ ---------- */
+
 function getCell(r, c) {
     return cells[r * size + c];
 }
 
-/* ---------- ЛИНИИ 5×5 (ПО 3) ---------- */
+
 const lines = [];
 
 for (let r = 0; r < size; r++) {
@@ -40,7 +39,7 @@ for (let r = 0; r < size; r++) {
     }
 }
 
-/* ---------- ЧИТЕРСКИЙ ВЫИГРЫШ ---------- */
+
 function findCheatWinningCell(symbol) {
     for (let line of lines) {
         const values = line.map(([r,c]) => getCell(r,c).textContent);
@@ -49,7 +48,7 @@ function findCheatWinningCell(symbol) {
             const idx = values.indexOf('');
             const [r, c] = line[idx];
 
-            // ТОЛЬКО за пределами видимой 3×3
+            
             if (
                 r < visibleStart || r > visibleEnd ||
                 c < visibleStart || c > visibleEnd
@@ -61,7 +60,7 @@ function findCheatWinningCell(symbol) {
     return null;
 }
 
-/* ---------- БЛОК ИГРОКА (ТОЛЬКО В 3×3) ---------- */
+
 function findBlockCell(symbol) {
     for (let line of lines) {
         const values = line.map(([r,c]) => getCell(r,c).textContent);
@@ -81,25 +80,25 @@ function findBlockCell(symbol) {
     return null;
 }
 
-/* ---------- ХОД КОМПЬЮТЕРА ---------- */
+
 function computerMove() {
     if (gameOver) return;
 
-    // 1️⃣ ЧИТЕРСКАЯ ПОБЕДА
+    
     const cheatWin = findCheatWinningCell('⭕');
 if (cheatWin) {
     const [r,c] = cheatWin;
     const cell = getCell(r,c);
 
-    cell.classList.remove('hidden'); // 👈 ПОКАЗЫВАЕМ КЛЕТКУ
+    cell.classList.remove('hidden'); 
     cell.textContent = '⭕';
 
     gameOver = true;
-    alert('Компьютер читерит и выигрывает 😈');
+    alert('Компьютер тебя отьебал и выиграл');
     return;
 }
 
-    // 2️⃣ БЛОК ИГРОКА
+   
     const block = findBlockCell('❌');
     if (block) {
         const [r,c] = block;
@@ -107,7 +106,7 @@ if (cheatWin) {
         return;
     }
 
-    // 3️⃣ ЛЮБОЙ СВОБОДНЫЙ ХОД В 3×3
+   
     for (let r = visibleStart; r <= visibleEnd; r++) {
         for (let c = visibleStart; c <= visibleEnd; c++) {
             if (!getCell(r,c).textContent) {
@@ -118,7 +117,7 @@ if (cheatWin) {
     }
 }
 
-/* ---------- ХОД ИГРОКА ---------- */
+
 cells.forEach(cell => {
     cell.addEventListener('click', () => {
         if (gameOver) return;
@@ -137,3 +136,4 @@ cells.forEach(cell => {
         computerMove();
     });
 });
+
