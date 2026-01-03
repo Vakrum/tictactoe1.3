@@ -39,9 +39,10 @@ h1 {
 }
 
 .cell.hidden {
-    visibility: hidden; /* невидимые ячейки для читерства */
+    visibility: hidden; 
 }
 
 .cell:hover {
     background-color: #f0f0f0;
 }
+
