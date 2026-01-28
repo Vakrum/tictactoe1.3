@@ -94,7 +94,7 @@ if (cheatWin) {
     cell.textContent = '⭕';
 
     gameOver = true;
-    alert('Компьютер тебя обыграл и выиграл');
+    alert('u lost buddy XD Lol');
     return;
 }
 
@@ -136,5 +136,6 @@ cells.forEach(cell => {
         computerMove();
     });
 });
+
 
 
