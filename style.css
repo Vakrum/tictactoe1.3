@@ -5,44 +5,84 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
-    background-color: #2c2c2c;
-    font-family: Arial, sans-serif;
+    background-color: #121212;
+    font-family: 'Segoe UI', sans-serif;
     color: white;
 }
 
 h1 {
     margin-bottom: 20px;
+    letter-spacing: 3px;
 }
 
 .board {
     display: grid;
-    grid-template-columns: repeat(5, 60px);
-    grid-template-rows: repeat(5, 60px);
-    gap: 5px;
-    background-color: white;
-    padding: 5px;
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    /* 5 Spalten à 100px = 500px Breite */
+    grid-template-columns: repeat(5, 100px);
+    grid-template-rows: repeat(5, 100px);
+    gap: 8px;
+    background-color: #333;
+    padding: 10px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
 .cell {
-    width: 60px;
-    height: 60px;
-    background: #fff;
-    font-size: 40px;
-    text-align: center;
-    line-height: 60px;
+    width: 100px;
+    height: 100px;
+    background: #1e1e1e;
+    font-size: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     cursor: pointer;
+    border-radius: 8px;
     user-select: none;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-.cell.hidden {
-    visibility: hidden; 
+    transition: background 0.2s;
 }
 
 .cell:hover {
-    background-color: #f0f0f0;
+    background-color: #2a2a2a;
 }
 
+/* Die äußeren Zellen sind unsichtbar, aber vorhanden */
+.cell.hidden {
+    visibility: hidden;
+}
+
+/* Modal / Pop-up */
+.modal {
+    display: none; /* Wichtig: Startet versteckt */
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: #252525;
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    border: 2px solid #ff4757;
+    animation: jumpIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes jumpIn {
+    0% { transform: scale(0.3); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+#restartBtn {
+    background: #ff4757;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 20px;
+}
