@@ -56,7 +56,7 @@ function finish(msg) {
     setTimeout(() => {
         modalText.textContent = msg;
         modal.style.display = 'flex';
-    }, 2000); 
+    }, 22000); 
 }
 
 function botMove() {
