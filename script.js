@@ -7,6 +7,7 @@ const size = 5;
 const vStart = 1, vEnd = 3; 
 let cells = [];
 let gameOver = false;
+let finishTimeout = null; // Store the timer so we can cancel it
 
 const lines = [];
 for (let r = 0; r < size; r++) {
@@ -18,11 +19,19 @@ for (let r = 0; r < size; r++) {
     }
 }
 
+// Global click listener to skip the delay
+window.addEventListener('click', () => {
+    if (gameOver && modal.style.display !== 'flex') {
+        showModal();
+    }
+});
+
 function init() {
     boardElement.innerHTML = '';
     cells = [];
     gameOver = false;
     modal.style.display = 'none';
+    if (finishTimeout) clearTimeout(finishTimeout);
 
     for (let i = 0; i < size * size; i++) {
         const r = Math.floor(i / size);
@@ -34,11 +43,15 @@ function init() {
             cell.classList.add('hidden');
         }
         
-        cell.addEventListener('click', () => {
+        cell.addEventListener('click', (e) => {
             if (gameOver || cell.textContent || cell.classList.contains('hidden')) return;
+            e.stopPropagation(); // Prevent the skip-delay click from firing on the same click
             cell.textContent = '❌';
             cell.style.color = '#54a0ff';
-            if (checkWin('❌')) return finish("well u won, but at what cost, anyways u probably cheated");
+            if (checkWin('❌')) {
+                finish("well u won, but at what cost, anyways u probably cheated");
+                return;
+            }
             setTimeout(botMove, 200);
         });
 
@@ -50,19 +63,22 @@ function init() {
 function getCell(r, c) { return cells[r * size + c]; }
 function checkWin(sym) { return lines.some(l => l.every(([r, c]) => getCell(r,c).textContent === sym)); }
 
-// Added a 800ms delay here so the move is visible before the pop-up
+function showModal() {
+    if (finishTimeout) clearTimeout(finishTimeout);
+    modal.style.display = 'flex';
+}
+
 function finish(msg) {
     gameOver = true;
-    setTimeout(() => {
-        modalText.textContent = msg;
-        modal.style.display = 'flex';
-    }, 22000); 
+    modalText.textContent = msg;
+    // Start the 3-second timer
+    finishTimeout = setTimeout(showModal, 3000); 
 }
 
 function botMove() {
     if (gameOver) return;
 
-    // Bot Cheating Logic
+    // 1. Win/Cheat Logic
     for (let l of lines) {
         const vals = l.map(([r,c]) => getCell(r,c).textContent);
         if (vals.filter(v => v === '⭕').length === 2 && vals.includes('')) {
@@ -70,7 +86,6 @@ function botMove() {
             const [r, c] = l[idx];
             const cEl = getCell(r,c);
             
-            // Visual feedback of the cheat
             if (cEl.classList.contains('hidden')) {
                 cEl.classList.remove('hidden');
                 cEl.classList.add('revealed-cheat');
@@ -79,12 +94,12 @@ function botMove() {
             cEl.textContent = '⭕';
             cEl.style.color = '#ff4757';
             
-            // Trigger finish AFTER the symbol is placed
-            return finish("LOL u lost to a bot in a tic taco toe game?? such a skill issue");
+            finish("LOL u lost to a bot in a tic taco toe game?? such a skill issue");
+            return; 
         }
     }
 
-    // Defensive Logic
+    // 2. Block Player
     for (let l of lines) {
         const vals = l.map(([r,c]) => getCell(r,c).textContent);
         if (vals.filter(v => v === '❌').length === 2 && vals.includes('')) {
@@ -99,15 +114,14 @@ function botMove() {
         }
     }
 
-    // Center play
-    if (!getCell(2, 2).textContent) {
-        const center = getCell(2, 2);
+    // 3. Normal Move
+    const center = getCell(2, 2);
+    if (!center.textContent) {
         center.textContent = '⭕';
         center.style.color = '#ff4757';
         return;
     }
 
-    // Random play
     const emptyVisible = [];
     for (let r = vStart; r <= vEnd; r++) {
         for (let c = vStart; c <= vEnd; c++) {
