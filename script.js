@@ -4,7 +4,7 @@ function finish(msg) {
     setTimeout(() => {
         modalText.textContent = msg;
         modal.style.display = 'flex';
-    }, 4000);
+    }, 10000);
 }
 
 function botMove() {
