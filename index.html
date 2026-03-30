@@ -1,491 +1,207 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Tic-Tac-Toe Impossible Edition</title>
-
+    <title>Tic-Tac-Toe</title>
     <style>
-
+        * { box-sizing: border-box; }
         body {
-
             display: flex;
-
             flex-direction: column;
-
             justify-content: center;
-
             align-items: center;
-
-            height: 100vh;
-
+            min-height: 100vh;
             margin: 0;
-
-            background-color: #121212;
-
+            background-color: #050505;
             font-family: 'Segoe UI', sans-serif;
-
             color: white;
-
             overflow: hidden;
-
         }
-
-
-
         h1 {
-
-            margin-bottom: 20px;
-
+            margin-top: -50px;
+            margin-bottom: 40px;
             font-size: 2.5rem;
-
             text-transform: uppercase;
-
-            letter-spacing: 3px;
-
+            letter-spacing: 8px;
+            color: #ff4757;
+            text-shadow: 0 0 20px rgba(255, 71, 87, 0.5);
         }
-
-
-
         .board {
-
             display: grid;
-
             grid-template-columns: repeat(5, 100px);
-
             grid-template-rows: repeat(5, 100px);
-
             gap: 10px;
-
-            background-color: #333;
-
-            padding: 15px;
-
-            border-radius: 20px;
-
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-
+            padding: 10px;
+            width: max-content;
         }
-
-
-
         .cell {
-
             width: 100px;
-
             height: 100px;
-
-            background: #1e1e1e;
-
-            font-size: 60px;
-
             display: flex;
-
             justify-content: center;
-
             align-items: center;
-
+            font-size: 50px;
             cursor: pointer;
-
-            border-radius: 12px;
-
             user-select: none;
-
-            transition: all 0.3s ease;
-
+            transition: all 0.2s;
+            border-radius: 10px;
         }
-
-
-
-        .cell.hidden {
-
-            opacity: 0;
-
+        .inner {
+            background: #121212;
+            border: 1px solid #252525;
+        }
+        .inner:hover {
+            background: #1a1a1a;
+        }
+        .outer {
+            visibility: hidden;
             pointer-events: none;
-
         }
-
-
-
-        .cell.revealed-cheat {
-
-            opacity: 1 !important;
-
+        .revealed-cheat {
             visibility: visible !important;
-
-            background-color: #3d1014;
-
-            border: 2px solid #ff4757;
-
+            background-color: #450000 !important;
+            border: 3px solid #ff4757 !important;
             box-shadow: 0 0 20px #ff4757;
-
-            animation: pulse 1s infinite;
-
+            animation: glitch 0.2s infinite;
         }
-
-
-
-        @keyframes pulse {
-
-            0% { transform: scale(1); }
-
-            50% { transform: scale(1.05); }
-
-            100% { transform: scale(1); }
-
+        @keyframes glitch {
+            0% { transform: translate(1px, 1px); }
+            50% { transform: translate(-1px, -2px); }
+            100% { transform: translate(1px, -1px); }
         }
-
-
-
         .modal {
-
             display: none;
-
             position: fixed;
-
-            top: 0; left: 0;
-
-            width: 100%; height: 100%;
-
+            inset: 0;
             background: rgba(0, 0, 0, 0.9);
-
             backdrop-filter: blur(10px);
-
             justify-content: center;
-
             align-items: center;
-
-            z-index: 9999;
-
+            z-index: 1000;
         }
-
-
-
         .modal-content {
-
-            background: #222;
-
+            background: #111;
             padding: 40px;
-
-            border-radius: 30px;
-
-            text-align: center;
-
-            border: 3px solid #ff4757;
-
-            max-width: 400px;
-
-            animation: jumpIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-
-        }
-
-
-
-        @keyframes jumpIn {
-
-            0% { transform: scale(0.1); opacity: 0; }
-
-            100% { transform: scale(1); opacity: 1; }
-
-        }
-
-
-
-        #restartBtn {
-
-            background: #ff4757;
-
-            color: white;
-
-            border: none;
-
-            padding: 15px 40px;
-
-            font-size: 1.2rem;
-
-            font-weight: bold;
-
             border-radius: 15px;
-
+            text-align: center;
+            border: 2px solid #ff4757;
+            max-width: 400px;
+        }
+        button {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1rem;
             cursor: pointer;
-
             margin-top: 20px;
-
+            text-transform: uppercase;
+            font-weight: bold;
+            border-radius: 4px;
         }
-
     </style>
-
 </head>
-
 <body>
-
-
-
-    <h1>Tic-Tac-Toe</h1>
-
+    <h1>TIC-TAC-TOE</h1>
     <div class="board" id="board"></div>
-
-
-
-    <div id="gameModal" class="modal">
-
+    <div id="modal" class="modal">
         <div class="modal-content">
-
-            <h2 id="modalText"></h2>
-
-            <button id="restartBtn">Play Again</button>
-
+            <h2 id="msg"></h2>
+            <button onclick="init()">Play Again</button>
         </div>
-
     </div>
-
-
-
     <script>
-
-        const boardElement = document.getElementById('board');
-
-        const modal = document.getElementById('gameModal');
-
-        const modalText = document.getElementById('modalText');
-
-        const restartBtn = document.getElementById('restartBtn');
-
-
-
-        const size = 5;
-
-        const vStart = 1, vEnd = 3; 
-
+        const b = document.getElementById('board');
+        const m = document.getElementById('modal');
+        const t = document.getElementById('msg');
+        const S = 5;
+        const W = 3;
         let cells = [];
-
-        let gameOver = false;
-
-
-
+        let active = true;
         const lines = [];
-
-        for (let r = 0; r < size; r++) {
-
-            for (let c = 0; c < size; c++) {
-
-                if (c <= size - 3) lines.push([[r,c],[r,c+1],[r,c+2]]);
-
-                if (r <= size - 3) lines.push([[r,c],[r+1,c],[r+2,c]]);
-
-                if (r <= size - 3 && c <= size - 3) lines.push([[r,c],[r+1,c+1],[r+2,c+2]]);
-
-                if (r <= size - 3 && c >= 2) lines.push([[r,c],[r+1,c-1],[r+2,c-2]]);
-
+        for (let r = 0; r < S; r++) {
+            for (let c = 0; c < S; c++) {
+                if (c <= S - W) lines.push(Array.from({length: W}, (_, i) => [r, c + i]));
+                if (r <= S - W) lines.push(Array.from({length: W}, (_, i) => [r + i, c]));
+                if (r <= S - W && c <= S - W) lines.push(Array.from({length: W}, (_, i) => [r + i, c + i]));
+                if (r <= S - W && c >= W - 1) lines.push(Array.from({length: W}, (_, i) => [r + i, c - i]));
             }
-
         }
-
-
-
         function init() {
-
-            boardElement.innerHTML = '';
-
+            b.innerHTML = '';
             cells = [];
-
-            gameOver = false;
-
-            modal.style.display = 'none';
-
-
-
-            for (let i = 0; i < size * size; i++) {
-
-                const r = Math.floor(i / size);
-
-                const c = i % size;
-
+            active = true;
+            m.style.display = 'none';
+            for (let i = 0; i < S * S; i++) {
+                const r = Math.floor(i / S);
+                const c = i % S;
                 const cell = document.createElement('div');
-
-                cell.classList.add('cell');
-
-                
-
-                if (r === 0 || r === 4 || c === 0 || c === 4) {
-
-                    cell.classList.add('hidden');
-
+                cell.className = 'cell';
+                if (r >= 1 && r <= 3 && c >= 1 && c <= 3) {
+                    cell.classList.add('inner');
+                } else {
+                    cell.classList.add('outer');
                 }
-
-                
-
-                cell.addEventListener('click', () => {
-
-                    if (gameOver || cell.textContent || cell.classList.contains('hidden')) return;
-
+                cell.onclick = () => {
+                    if (!active || cell.textContent || cell.classList.contains('outer')) return;
                     cell.textContent = '❌';
-
-                    cell.style.color = '#54a0ff';
-
-                    if (checkWin('❌')) return finish("well u won, but at what cost, anyways u probably cheated");
-
-                    setTimeout(botMove, 200);
-
-                });
-
-
-
-                boardElement.appendChild(cell);
-
+                    cell.style.color = '#00a8ff';
+                    if (checkWin('❌')) return end("well u won, but at what cost");
+                    setTimeout(bot, 200);
+                };
+                b.appendChild(cell);
                 cells.push(cell);
-
             }
-
         }
-
-
-
-        function getCell(r, c) { return cells[r * size + c]; }
-
-        function checkWin(sym) { return lines.some(l => l.every(([r, c]) => getCell(r,c).textContent === sym)); }
-
-
-
-        function finish(msg) {
-
-            gameOver = true;
-
-            setTimeout(() => {
-
-                modalText.textContent = msg;
-
-                modal.style.display = 'flex';
-
-            }, 600);
-
+        function get(r, c) { return cells[r * S + c]; }
+        function checkWin(p) { return lines.some(l => l.every(([r, c]) => get(r,c).textContent === p)); }
+        function end(s) {
+            active = false;
+            setTimeout(() => { t.textContent = s; m.style.display = 'flex'; }, 400);
         }
-
-
-
-        function botMove() {
-
-            if (gameOver) return;
-
-
-
+        function bot() {
+            if (!active) return;
             for (let l of lines) {
-
-                const vals = l.map(([r,c]) => getCell(r,c).textContent);
-
-                if (vals.filter(v => v === '⭕').length === 2 && vals.includes('')) {
-
-                    const idx = vals.indexOf('');
-
-                    const [r, c] = l[idx];
-
-                    const cEl = getCell(r,c);
-
-                    if (cEl.classList.contains('hidden')) {
-
-                        cEl.classList.remove('hidden');
-
-                        cEl.classList.add('revealed-cheat');
-
-                    }
-
+                const v = l.map(([r,c]) => get(r,c).textContent);
+                if (v.filter(x => x === '⭕').length === W - 1 && v.includes('')) {
+                    const [r, c] = l[v.indexOf('')];
+                    const cEl = get(r,c);
+                    if (cEl.classList.contains('outer')) cEl.classList.add('revealed-cheat');
                     cEl.textContent = '⭕';
-
                     cEl.style.color = '#ff4757';
-
-                    return finish("LOL u lost to a bot in a tic taco toe game?? such a skill issue");
-
+                    return end("LOL u lost to a bot?? such a skill issue");
                 }
-
             }
-
-
-
             for (let l of lines) {
-
-                const vals = l.map(([r,c]) => getCell(r,c).textContent);
-
-                if (vals.filter(v => v === '❌').length === 2 && vals.includes('')) {
-
-                    const idx = vals.indexOf('');
-
-                    const [r, c] = l[idx];
-
-                    const cEl = getCell(r,c);
-
-                    if (r >= vStart && r <= vEnd && c >= vStart && c <= vEnd) {
-
+                const v = l.map(([r,c]) => get(r,c).textContent);
+                if (v.filter(x => x === '❌').length === W - 1 && v.includes('')) {
+                    const [r, c] = l[v.indexOf('')];
+                    if (r >= 1 && r <= 3 && c >= 1 && c <= 3) {
+                        const cEl = get(r,c);
                         cEl.textContent = '⭕';
-
                         cEl.style.color = '#ff4757';
-
                         return;
-
                     }
-
                 }
-
             }
-
-
-
-            if (!getCell(2, 2).textContent) {
-
-                const center = getCell(2, 2);
-
-                center.textContent = '⭕';
-
-                center.style.color = '#ff4757';
-
-                return;
-
-            }
-
-
-
-            const emptyVisible = [];
-
-            for (let r = vStart; r <= vEnd; r++) {
-
-                for (let c = vStart; c <= vEnd; c++) {
-
-                    if (!getCell(r,c).textContent) emptyVisible.push([r,c]);
-
+            const avail = [];
+            for (let r = 1; r <= 3; r++) {
+                for (let c = 1; c <= 3; c++) {
+                    if (!get(r,c).textContent) avail.push([r,c]);
                 }
-
             }
-
-            if (emptyVisible.length > 0) {
-
-                const [r, c] = emptyVisible[Math.floor(Math.random() * emptyVisible.length)];
-
-                const target = getCell(r,c);
-
+            if (avail.length > 0) {
+                const [r, c] = avail[Math.floor(Math.random() * avail.length)];
+                const target = get(r,c);
                 target.textContent = '⭕';
-
                 target.style.color = '#ff4757';
-
+                if (checkWin('⭕')) end("Imagine losing to a bot.");
             } else {
-
-                finish("It's a draw... for now.");
-
+                end("It's a draw... for now.");
             }
-
         }
-
-
-
-        restartBtn.onclick = init;
-
         init();
-
     </script>
-
 </body>
-
 </html>
