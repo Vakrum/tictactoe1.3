@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forbidden 5-in-a-Row</title>
+    <title>5 in a row</title>
     <style>
         body {
             display: flex;
@@ -19,22 +19,23 @@
         }
 
         h1 {
-            margin-bottom: 15px;
-            font-size: 1.8rem;
+            margin-bottom: 40px;
+            font-size: 2.2rem;
             text-transform: uppercase;
-            letter-spacing: 5px;
+            letter-spacing: 6px;
             color: #ff4757;
             text-shadow: 0 0 15px rgba(255, 71, 87, 0.4);
+            text-align: center;
         }
 
         .board {
             display: grid;
             grid-template-columns: repeat(7, 70px);
             grid-template-rows: repeat(7, 70px);
-            gap: 5px;
+            gap: 8px;
             background-color: #1a1a1a;
-            padding: 10px;
-            border-radius: 10px;
+            padding: 15px;
+            border-radius: 12px;
             box-shadow: 0 0 50px rgba(0,0,0,1);
         }
 
@@ -47,10 +48,10 @@
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            border-radius: 4px;
-            transition: background 0.2s;
-            border: 1px solid #222;
+            border-radius: 6px;
+            border: 1px solid #252525;
             user-select: none;
+            transition: background 0.2s;
         }
 
         .cell.hidden {
@@ -102,12 +103,13 @@
             cursor: pointer;
             margin-top: 20px;
             text-transform: uppercase;
+            border-radius: 4px;
         }
     </style>
 </head>
 <body>
 
-    <h1>7x7 Matrix (5-In-Row)</h1>
+    <h1>5 IN A ROW</h1>
     <div class="board" id="board"></div>
 
     <div id="gameModal" class="modal">
@@ -160,7 +162,7 @@
                     if (!active || cell.textContent || cell.classList.contains('hidden')) return;
                     cell.textContent = '❌';
                     cell.style.color = '#00a8ff';
-                    if (checkWin('❌')) return end("You broke the simulation.");
+                    if (checkWin('❌')) return end("You win... somehow.");
                     setTimeout(botMove, 200);
                 };
 
@@ -194,7 +196,7 @@
                     }
                     el.textContent = '⭕';
                     el.style.color = '#ff4757';
-                    return end("Bot used a hidden sector to win.");
+                    return end("The bot cheated from the shadows.");
                 }
             }
 
