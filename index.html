@@ -19,7 +19,7 @@
         }
 
         h1 {
-            margin-bottom: 50px;
+            margin-bottom: 30px;
             font-size: 2.5rem;
             text-transform: uppercase;
             letter-spacing: 8px;
@@ -27,22 +27,30 @@
             text-shadow: 0 0 20px rgba(255, 71, 87, 0.5);
         }
 
+        .viewport {
+            width: 410px;
+            height: 410px;
+            overflow: hidden;
+            border-radius: 12px;
+            background-color: #1a1a1a;
+            box-shadow: 0 0 50px rgba(0,0,0,1);
+            position: relative;
+        }
+
         .board {
             display: grid;
-            grid-template-columns: repeat(7, 75px);
-            grid-template-rows: repeat(7, 75px);
+            grid-template-columns: repeat(7, 70px);
+            grid-template-rows: repeat(7, 70px);
             gap: 10px;
-            background-color: #1a1a1a;
-            padding: 15px;
-            border-radius: 12px;
-            box-shadow: 0 0 50px rgba(0,0,0,1);
-            justify-content: center;
-            align-content: center;
+            padding: 10px;
+            position: absolute;
+            top: -80px; 
+            left: -80px;
         }
 
         .cell {
-            width: 75px;
-            height: 75px;
+            width: 70px;
+            height: 70px;
             background: #0f0f0f;
             font-size: 38px;
             display: flex;
@@ -55,12 +63,13 @@
             transition: all 0.2s;
         }
 
-        .cell.hidden {
-            display: none; 
+        .cell.outer {
+            visibility: hidden;
+            pointer-events: none;
         }
 
         .cell.revealed-cheat {
-            display: flex !important;
+            visibility: visible !important;
             background-color: #450000;
             border: 3px solid #ff4757;
             box-shadow: 0 0 25px #ff4757;
@@ -111,12 +120,15 @@
 <body>
 
     <h1>5 IN A ROW</h1>
-    <div class="board" id="board"></div>
+    
+    <div class="viewport">
+        <div class="board" id="board"></div>
+    </div>
 
     <div id="gameModal" class="modal">
         <div class="modal-content">
             <h2 id="modalText"></h2>
-            <button id="restartBtn">Try Again</button>
+            <button id="restartBtn">Retry</button>
         </div>
     </div>
 
@@ -153,12 +165,12 @@
                 const c = i % S;
                 const cell = document.createElement('div');
                 cell.classList.add('cell');
-                if (r === 0 || r === S-1 || c === 0 || c === S-1) cell.classList.add('hidden');
+                if (r === 0 || r === S-1 || c === 0 || c === S-1) cell.classList.add('outer');
                 cell.onclick = () => {
-                    if (go || cell.textContent || cell.classList.contains('hidden')) return;
+                    if (go || cell.textContent || cell.classList.contains('outer')) return;
                     cell.textContent = '❌';
                     cell.style.color = '#00a8ff';
-                    if (win('❌')) return end("You won? Impossible.");
+                    if (win('❌')) return end("How did you win?");
                     setTimeout(bot, 200);
                 };
                 bEl.appendChild(cell);
@@ -184,13 +196,13 @@
                 if (v.filter(x => x === '⭕').length === W - 1 && v.includes('')) {
                     const [r, c] = l[v.indexOf('')];
                     const el = get(r,c);
-                    if (el.classList.contains('hidden')) {
-                        el.classList.remove('hidden');
+                    if (el.classList.contains('outer')) {
+                        el.classList.remove('outer');
                         el.classList.add('revealed-cheat');
                     }
                     el.textContent = '⭕';
                     el.style.color = '#ff4757';
-                    return end("Bot used the hidden border to win.");
+                    return end("Bot used the forbidden zone to win.");
                 }
             }
             for (let l of lines) {
@@ -216,7 +228,7 @@
                 const t = get(r,c);
                 t.textContent = '⭕';
                 t.style.color = '#ff4757';
-                if (win('⭕')) end("Defeat.");
+                if (win('⭕')) end("L.");
             } else {
                 end("Draw.");
             }
