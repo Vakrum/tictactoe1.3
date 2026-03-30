@@ -19,39 +19,40 @@
         }
 
         h1 {
-            margin-bottom: 40px;
-            font-size: 2.2rem;
+            margin-bottom: 50px;
+            font-size: 2.5rem;
             text-transform: uppercase;
-            letter-spacing: 6px;
+            letter-spacing: 8px;
             color: #ff4757;
-            text-shadow: 0 0 15px rgba(255, 71, 87, 0.4);
-            text-align: center;
+            text-shadow: 0 0 20px rgba(255, 71, 87, 0.5);
         }
 
         .board {
             display: grid;
-            grid-template-columns: repeat(7, 70px);
-            grid-template-rows: repeat(7, 70px);
-            gap: 8px;
+            grid-template-columns: repeat(7, 75px);
+            grid-template-rows: repeat(7, 75px);
+            gap: 10px;
             background-color: #1a1a1a;
             padding: 15px;
             border-radius: 12px;
             box-shadow: 0 0 50px rgba(0,0,0,1);
+            justify-content: center;
+            align-content: center;
         }
 
         .cell {
-            width: 70px;
-            height: 70px;
+            width: 75px;
+            height: 75px;
             background: #0f0f0f;
-            font-size: 35px;
+            font-size: 38px;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            border-radius: 6px;
+            border-radius: 8px;
             border: 1px solid #252525;
             user-select: none;
-            transition: background 0.2s;
+            transition: all 0.2s;
         }
 
         .cell.hidden {
@@ -61,15 +62,15 @@
         .cell.revealed-cheat {
             display: flex !important;
             background-color: #450000;
-            border: 2px solid #ff4757;
-            box-shadow: 0 0 20px #ff4757;
-            animation: shake 0.2s infinite;
+            border: 3px solid #ff4757;
+            box-shadow: 0 0 25px #ff4757;
+            animation: glitch 0.2s infinite;
             z-index: 100;
         }
 
-        @keyframes shake {
+        @keyframes glitch {
             0% { transform: translate(1px, 1px); }
-            50% { transform: translate(-1px, -1px); }
+            50% { transform: translate(-1px, -2px); }
             100% { transform: translate(1px, -1px); }
         }
 
@@ -78,7 +79,7 @@
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(0, 0, 0, 0.95);
             backdrop-filter: blur(10px);
             justify-content: center;
             align-items: center;
@@ -87,23 +88,23 @@
 
         .modal-content {
             background: #111;
-            padding: 40px;
-            border-radius: 15px;
+            padding: 50px;
+            border-radius: 20px;
             text-align: center;
-            border: 1px solid #ff4757;
-            max-width: 300px;
+            border: 2px solid #ff4757;
         }
 
         #restartBtn {
             background: #ff4757;
             color: white;
             border: none;
-            padding: 12px 25px;
-            font-size: 1rem;
+            padding: 15px 35px;
+            font-size: 1.1rem;
             cursor: pointer;
-            margin-top: 20px;
+            margin-top: 25px;
             text-transform: uppercase;
-            border-radius: 4px;
+            font-weight: bold;
+            border-radius: 5px;
         }
     </style>
 </head>
@@ -115,123 +116,113 @@
     <div id="gameModal" class="modal">
         <div class="modal-content">
             <h2 id="modalText"></h2>
-            <button id="restartBtn">Retry</button>
+            <button id="restartBtn">Try Again</button>
         </div>
     </div>
 
     <script>
-        const boardElement = document.getElementById('board');
-        const modal = document.getElementById('gameModal');
-        const modalText = document.getElementById('modalText');
-        const restartBtn = document.getElementById('restartBtn');
+        const bEl = document.getElementById('board');
+        const m = document.getElementById('gameModal');
+        const mT = document.getElementById('modalText');
+        const rB = document.getElementById('restartBtn');
 
         const S = 7; 
         const W = 5; 
-        const V_MIN = 1; 
-        const V_MAX = 5; 
+        const V_M = 1; 
+        const V_X = 5; 
         let cells = [];
-        let active = true;
+        let go = false;
 
-        const winLines = [];
+        const lines = [];
         for (let r = 0; r < S; r++) {
             for (let c = 0; c < S; c++) {
-                if (c <= S - W) winLines.push(Array.from({length: W}, (_, i) => [r, c + i]));
-                if (r <= S - W) winLines.push(Array.from({length: W}, (_, i) => [r + i, c]));
-                if (r <= S - W && c <= S - W) winLines.push(Array.from({length: W}, (_, i) => [r + i, c + i]));
-                if (r <= S - W && c >= W - 1) winLines.push(Array.from({length: W}, (_, i) => [r + i, c - i]));
+                if (c <= S - W) lines.push(Array.from({length: W}, (_, i) => [r, c + i]));
+                if (r <= S - W) lines.push(Array.from({length: W}, (_, i) => [r + i, c]));
+                if (r <= S - W && c <= S - W) lines.push(Array.from({length: W}, (_, i) => [r + i, c + i]));
+                if (r <= S - W && c >= W - 1) lines.push(Array.from({length: W}, (_, i) => [r + i, c - i]));
             }
         }
 
         function init() {
-            boardElement.innerHTML = '';
+            bEl.innerHTML = '';
             cells = [];
-            active = true;
-            modal.style.display = 'none';
-
+            go = false;
+            m.style.display = 'none';
             for (let i = 0; i < S * S; i++) {
                 const r = Math.floor(i / S);
                 const c = i % S;
                 const cell = document.createElement('div');
                 cell.classList.add('cell');
-                
-                if (r === 0 || r === S-1 || c === 0 || c === S-1) {
-                    cell.classList.add('hidden');
-                }
-                
+                if (r === 0 || r === S-1 || c === 0 || c === S-1) cell.classList.add('hidden');
                 cell.onclick = () => {
-                    if (!active || cell.textContent || cell.classList.contains('hidden')) return;
+                    if (go || cell.textContent || cell.classList.contains('hidden')) return;
                     cell.textContent = '❌';
                     cell.style.color = '#00a8ff';
-                    if (checkWin('❌')) return end("You win... somehow.");
-                    setTimeout(botMove, 200);
+                    if (win('❌')) return end("You won? Impossible.");
+                    setTimeout(bot, 200);
                 };
-
-                boardElement.appendChild(cell);
+                bEl.appendChild(cell);
                 cells.push(cell);
             }
         }
 
-        function getC(r, c) { return cells[r * S + c]; }
-        function checkWin(p) { return winLines.some(l => l.every(([r, c]) => getC(r,c).textContent === p)); }
+        function get(r, c) { return cells[r * S + c]; }
+        function win(p) { return lines.some(l => l.every(([r, c]) => get(r,c).textContent === p)); }
 
-        function end(m) {
-            active = false;
+        function end(txt) {
+            go = true;
             setTimeout(() => {
-                modalText.textContent = m;
-                modal.style.display = 'flex';
+                mT.textContent = txt;
+                m.style.display = 'flex';
             }, 400);
         }
 
-        function botMove() {
-            if (!active) return;
-
-            for (let l of winLines) {
-                const v = l.map(([r,c]) => getC(r,c).textContent);
+        function bot() {
+            if (go) return;
+            for (let l of lines) {
+                const v = l.map(([r,c]) => get(r,c).textContent);
                 if (v.filter(x => x === '⭕').length === W - 1 && v.includes('')) {
                     const [r, c] = l[v.indexOf('')];
-                    const el = getC(r,c);
+                    const el = get(r,c);
                     if (el.classList.contains('hidden')) {
                         el.classList.remove('hidden');
                         el.classList.add('revealed-cheat');
                     }
                     el.textContent = '⭕';
                     el.style.color = '#ff4757';
-                    return end("The bot cheated from the shadows.");
+                    return end("Bot used the hidden border to win.");
                 }
             }
-
-            for (let l of winLines) {
-                const v = l.map(([r,c]) => getC(r,c).textContent);
+            for (let l of lines) {
+                const v = l.map(([r,c]) => get(r,c).textContent);
                 if (v.filter(x => x === '❌').length === W - 1 && v.includes('')) {
                     const [r, c] = l[v.indexOf('')];
-                    if (r >= V_MIN && r <= V_MAX && c >= V_MIN && c <= V_MAX) {
-                        const el = getC(r,c);
+                    if (r >= V_M && r <= V_X && c >= V_M && c <= V_X) {
+                        const el = get(r,c);
                         el.textContent = '⭕';
                         el.style.color = '#ff4757';
                         return;
                     }
                 }
             }
-
-            const avail = [];
-            for (let r = V_MIN; r <= V_MAX; r++) {
-                for (let c = V_MIN; c <= V_MAX; c++) {
-                    if (!getC(r,c).textContent) avail.push([r,c]);
+            const av = [];
+            for (let r = V_M; r <= V_X; r++) {
+                for (let c = V_M; c <= V_X; c++) {
+                    if (!get(r,c).textContent) av.push([r,c]);
                 }
             }
-
-            if (avail.length > 0) {
-                const [r, c] = avail[Math.floor(Math.random() * avail.length)];
-                const target = getC(r,c);
-                target.textContent = '⭕';
-                target.style.color = '#ff4757';
-                if (checkWin('⭕')) end("Defeat.");
+            if (av.length > 0) {
+                const [r, c] = av[Math.floor(Math.random() * av.length)];
+                const t = get(r,c);
+                t.textContent = '⭕';
+                t.style.color = '#ff4757';
+                if (win('⭕')) end("Defeat.");
             } else {
                 end("Draw.");
             }
         }
 
-        restartBtn.onclick = init;
+        rB.onclick = init;
         init();
     </script>
 </body>
