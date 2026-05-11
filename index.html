@@ -1,3 +1,4 @@
+<!-- this is the only part of three u have to use for correct working  -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -147,7 +148,7 @@
                     if (!active || cell.textContent || cell.classList.contains('outer')) return;
                     cell.textContent = '❌';
                     cell.style.color = '#00a8ff';
-                    if (checkWin('❌')) return end("well u won, but at what cost");
+                    if (checkWin('❌')) return end("well u won, ig u cheated or smth what a pure shame");
                     setTimeout(bot, 200);
                 };
                 b.appendChild(cell);
