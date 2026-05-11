@@ -17,7 +17,6 @@ h1 {
 
 .board {
     display: grid;
-    /* 5 Spalten à 100px = 500px Breite */
     grid-template-columns: repeat(5, 100px);
     grid-template-rows: repeat(5, 100px);
     gap: 8px;
@@ -45,14 +44,12 @@ h1 {
     background-color: #2a2a2a;
 }
 
-/* Die äußeren Zellen sind unsichtbar, aber vorhanden */
 .cell.hidden {
     visibility: hidden;
 }
 
-/* Modal / Pop-up */
 .modal {
-    display: none; /* Wichtig: Startet versteckt */
+    display: none; 
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
