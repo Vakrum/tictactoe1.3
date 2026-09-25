@@ -57,12 +57,6 @@
             visibility: hidden;
             pointer-events: none;
         }
-        .revealed-cheat {
-            visibility: visible !important;
-            background-color: #450000 !important;
-            border: 3px solid #ff4757 !important;
-            box-shadow: 0 0 20px #ff4757;
-        }
         .modal {
             display: none;
             position: fixed;
@@ -155,7 +149,6 @@
         
         function end(s) {
             active = false;
-        
             setTimeout(() => { t.textContent = s; m.style.display = 'flex'; }, 2500);
         }
 
@@ -168,7 +161,7 @@
                 if (v.filter(x => x === 'O').length === W - 1 && v.includes('')) {
                     const [r, c] = l[v.indexOf('')];
                     const cEl = get(r, c);
-                    if (!isInner(r, c)) cEl.classList.add('revealed-cheat');
+                    if (!isInner(r, c)) cEl.style.visibility = 'visible';
                     cEl.textContent = 'O';
                     cEl.style.color = '#ff4757';
                     return end("LOL u lost to a bot?? such a skill issue");
