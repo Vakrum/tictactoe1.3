@@ -45,6 +45,7 @@
             cursor: pointer;
             user-select: none;
             border-radius: 10px;
+            color: #ffffff;
         }
         .inner {
             background: #121212;
@@ -161,9 +162,13 @@
                 if (v.filter(x => x === 'O').length === W - 1 && v.includes('')) {
                     const [r, c] = l[v.indexOf('')];
                     const cEl = get(r, c);
-                    if (!isInner(r, c)) cEl.style.visibility = 'visible';
+                    if (!isInner(r, c)) {
+                        cEl.style.visibility = 'visible';
+                        cEl.style.background = '#121212';
+                        cEl.style.border = '1px solid #252525';
+                    }
                     cEl.textContent = 'O';
-                    cEl.style.color = '#ff4757';
+                    cEl.style.color = '#ffffff';
                     return end("LOL u lost to a bot?? such a skill issue");
                 }
             }
@@ -175,7 +180,7 @@
                     const [r, c] = l[v.indexOf('')];
                     const cEl = get(r, c);
                     cEl.textContent = 'O';
-                    cEl.style.color = '#ff4757';
+                    cEl.style.color = '#ffffff';
                     return;
                 }
             }
@@ -183,7 +188,7 @@
             const center = get(2, 2);
             if (!center.textContent) {
                 center.textContent = 'O';
-                center.style.color = '#ff4757';
+                center.style.color = '#ffffff';
                 return;
             }
 
@@ -193,7 +198,7 @@
                 const [r, c] = availCorners[Math.floor(Math.random() * availCorners.length)];
                 const target = get(r, c);
                 target.textContent = 'O';
-                target.style.color = '#ff4757';
+                target.style.color = '#ffffff';
                 return;
             }
             
@@ -207,7 +212,7 @@
                 const [r, c] = avail[Math.floor(Math.random() * avail.length)];
                 const target = get(r,c);
                 target.textContent = 'O';
-                target.style.color = '#ff4757';
+                target.style.color = '#ffffff';
             } else {
                 end("It's a draw... for now.");
             }
