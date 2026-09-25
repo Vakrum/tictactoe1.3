@@ -44,7 +44,6 @@
             font-size: 50px;
             cursor: pointer;
             user-select: none;
-            transition: all 0.2s;
             border-radius: 10px;
         }
         .inner {
@@ -63,12 +62,6 @@
             background-color: #450000 !important;
             border: 3px solid #ff4757 !important;
             box-shadow: 0 0 20px #ff4757;
-            animation: glitch 0.2s infinite;
-        }
-        @keyframes glitch {
-            0% { transform: translate(1px, 1px); }
-            50% { transform: translate(-1px, -2px); }
-            100% { transform: translate(1px, -1px); }
         }
         .modal {
             display: none;
@@ -121,7 +114,6 @@
         let active = true;
         const lines = [];
 
-        
         for (let r = 0; r < S; r++) {
             for (let c = 0; c < S; c++) {
                 if (c <= S - W) lines.push(Array.from({length: W}, (_, i) => [r, c + i]));
@@ -163,7 +155,8 @@
         
         function end(s) {
             active = false;
-            setTimeout(() => { t.textContent = s; m.style.display = 'flex'; }, 400);
+        
+            setTimeout(() => { t.textContent = s; m.style.display = 'flex'; }, 2500);
         }
 
         function bot() {
