@@ -121,7 +121,7 @@
         let active = true;
         const lines = [];
 
-        // generating all possible 5x5 lines
+        
         for (let r = 0; r < S; r++) {
             for (let c = 0; c < S; c++) {
                 if (c <= S - W) lines.push(Array.from({length: W}, (_, i) => [r, c + i]));
@@ -170,7 +170,6 @@
             if (!active) return;
             const isInner = (r, c) => r >= 1 && r <= 3 && c >= 1 && c <= 3;
 
-            // wining cheat move 
             for (let l of lines) {
                 const v = l.map(([r, c]) => get(r, c).textContent);
                 if (v.filter(x => x === '⭕').length === W - 1 && v.includes('')) {
@@ -183,7 +182,6 @@
                 }
             }
 
-            // defense n blocking
             for (let l of lines) {
                 const v = l.map(([r, c]) => get(r, c).textContent);
                 const allInner = l.every(([r, c]) => isInner(r, c));
@@ -196,7 +194,6 @@
                 }
             }
 
-            // 3x3 tactic
             const center = get(2, 2);
             if (!center.textContent) {
                 center.textContent = '⭕';
@@ -204,7 +201,6 @@
                 return;
             }
 
-            // corners logic
             const innerCorners = [[1, 1], [1, 3], [3, 1], [3, 3]];
             const availCorners = innerCorners.filter(([r, c]) => !get(r, c).textContent);
             if (availCorners.length > 0) {
@@ -214,8 +210,7 @@
                 target.style.color = '#ff4757';
                 return;
             }
-
-          //3x3 Logic
+            
             const avail = [];
             for (let r = 1; r <= 3; r++) {
                 for (let c = 1; c <= 3; c++) {
