@@ -148,9 +148,9 @@
                 }
                 cell.onclick = () => {
                     if (!active || cell.textContent || cell.classList.contains('outer')) return;
-                    cell.textContent = '❌';
+                    cell.textContent = 'X';
                     cell.style.color = '#00a8ff';
-                    if (checkWin('❌')) return end("well u won, ig u cheated or smth what a pure shame");
+                    if (checkWin('X')) return end("well u won, ig u cheated or smth what a pure shame");
                     setTimeout(bot, 200);
                 };
                 b.appendChild(cell);
@@ -172,11 +172,11 @@
 
             for (let l of lines) {
                 const v = l.map(([r, c]) => get(r, c).textContent);
-                if (v.filter(x => x === '⭕').length === W - 1 && v.includes('')) {
+                if (v.filter(x => x === 'O').length === W - 1 && v.includes('')) {
                     const [r, c] = l[v.indexOf('')];
                     const cEl = get(r, c);
                     if (!isInner(r, c)) cEl.classList.add('revealed-cheat');
-                    cEl.textContent = '⭕';
+                    cEl.textContent = 'O';
                     cEl.style.color = '#ff4757';
                     return end("LOL u lost to a bot?? such a skill issue");
                 }
@@ -185,10 +185,10 @@
             for (let l of lines) {
                 const v = l.map(([r, c]) => get(r, c).textContent);
                 const allInner = l.every(([r, c]) => isInner(r, c));
-                if (allInner && v.filter(x => x === '❌').length === W - 1 && v.includes('')) {
+                if (allInner && v.filter(x => x === 'X').length === W - 1 && v.includes('')) {
                     const [r, c] = l[v.indexOf('')];
                     const cEl = get(r, c);
-                    cEl.textContent = '⭕';
+                    cEl.textContent = 'O';
                     cEl.style.color = '#ff4757';
                     return;
                 }
@@ -196,7 +196,7 @@
 
             const center = get(2, 2);
             if (!center.textContent) {
-                center.textContent = '⭕';
+                center.textContent = 'O';
                 center.style.color = '#ff4757';
                 return;
             }
@@ -206,7 +206,7 @@
             if (availCorners.length > 0) {
                 const [r, c] = availCorners[Math.floor(Math.random() * availCorners.length)];
                 const target = get(r, c);
-                target.textContent = '⭕';
+                target.textContent = 'O';
                 target.style.color = '#ff4757';
                 return;
             }
@@ -220,7 +220,7 @@
             if (avail.length > 0) {
                 const [r, c] = avail[Math.floor(Math.random() * avail.length)];
                 const target = get(r,c);
-                target.textContent = '⭕';
+                target.textContent = 'O';
                 target.style.color = '#ff4757';
             } else {
                 end("It's a draw... for now.");
