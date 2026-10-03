@@ -5,7 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tic-Tac-Toe</title>
     <style>
-        * { box-sizing: border-box; }
+        * { 
+            box-sizing: border-box; 
+            box-shadow: none !important;
+            text-shadow: none !important;
+        }
         body {
             display: flex;
             flex-direction: column;
@@ -13,7 +17,7 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            background-color: #0d0d0d;
+            background-color: #000000;
             font-family: 'Segoe UI', sans-serif;
             color: #ffffff;
             overflow: hidden;
@@ -47,11 +51,11 @@
             color: #ffffff;
         }
         .inner {
-            background: #1a1a1a;
-            border: 1px solid #333333;
+            background: #111111;
+            border: 1px solid #222222;
         }
         .inner:hover {
-            background: #262626;
+            background: #1a1a1a;
         }
         .outer {
             visibility: hidden;
@@ -61,23 +65,25 @@
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(0, 0, 0, 0.9);
             justify-content: center;
             align-items: center;
             z-index: 1000;
         }
         .modal-content {
-            background: #181818;
+            background: #111111;
             padding: 40px;
             border-radius: 15px;
             text-align: center;
-            border: 1px solid #333333; /* Standard neutral border */
+            border: 1px solid #333333;
             max-width: 400px;
+            box-shadow: none !important;
+            outline: none;
         }
         button {
-            background: #333333; /* Neutral gray button */
+            background: #222222;
             color: #ffffff;
-            border: none;
+            border: 1px solid #444444;
             padding: 12px 30px;
             font-size: 1rem;
             cursor: pointer;
@@ -85,9 +91,11 @@
             text-transform: uppercase;
             font-weight: bold;
             border-radius: 4px;
+            box-shadow: none !important;
+            outline: none;
         }
         button:hover {
-            background: #444444;
+            background: #333333;
         }
     </style>
 </head>
@@ -137,7 +145,7 @@
                 cell.onclick = () => {
                     if (!active || cell.textContent || cell.classList.contains('outer')) return;
                     cell.textContent = 'X';
-                    cell.style.color = '#aaaaaa';
+                    cell.style.color = '#cccccc';
                     if (checkWin('X')) return end("well u won, ig u cheated or smth what a pure shame");
                     setTimeout(bot, 200);
                 };
@@ -165,8 +173,8 @@
                     const cEl = get(r, c);
                     if (!isInner(r, c)) {
                         cEl.style.visibility = 'visible';
-                        cEl.style.background = '#1a1a1a';
-                        cEl.style.border = '1px solid #333333';
+                        cEl.style.background = '#111111';
+                        cEl.style.border = '1px solid #222222';
                     }
                     cEl.textContent = 'O';
                     cEl.style.color = '#ffffff';
