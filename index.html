@@ -13,7 +13,7 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            background-color: #050505;
+            background-color: #121212;
             font-family: 'Segoe UI', sans-serif;
             color: white;
             overflow: hidden;
@@ -25,7 +25,6 @@
             text-transform: uppercase;
             letter-spacing: 8px;
             color: #ff4757;
-            text-shadow: 0 0 20px rgba(255, 71, 87, 0.5);
         }
         .board {
             display: grid;
@@ -48,11 +47,11 @@
             color: #ffffff;
         }
         .inner {
-            background: #121212;
-            border: 1px solid #252525;
+            background: #1e1e1e;
+            border: 1px solid #333333;
         }
         .inner:hover {
-            background: #1a1a1a;
+            background: #2a2a2a;
         }
         .outer {
             visibility: hidden;
@@ -62,14 +61,13 @@
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.8);
             justify-content: center;
             align-items: center;
             z-index: 1000;
         }
         .modal-content {
-            background: #111;
+            background: #1e1e1e;
             padding: 40px;
             border-radius: 15px;
             text-align: center;
@@ -164,8 +162,8 @@
                     const cEl = get(r, c);
                     if (!isInner(r, c)) {
                         cEl.style.visibility = 'visible';
-                        cEl.style.background = '#121212';
-                        cEl.style.border = '1px solid #252525';
+                        cEl.style.background = '#1e1e1e';
+                        cEl.style.border = '1px solid #333333';
                     }
                     cEl.textContent = 'O';
                     cEl.style.color = '#ffffff';
