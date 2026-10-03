@@ -13,7 +13,7 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            background-color: #121212;
+            background-color: #0d0d0d;
             font-family: 'Segoe UI', sans-serif;
             color: #ffffff;
             overflow: hidden;
@@ -47,11 +47,11 @@
             color: #ffffff;
         }
         .inner {
-            background: #1e1e1e;
+            background: #1a1a1a;
             border: 1px solid #333333;
         }
         .inner:hover {
-            background: #2a2a2a;
+            background: #262626;
         }
         .outer {
             visibility: hidden;
@@ -67,16 +67,16 @@
             z-index: 1000;
         }
         .modal-content {
-            background: #1e1e1e;
+            background: #181818;
             padding: 40px;
             border-radius: 15px;
             text-align: center;
-            border: 1px solid #333333;
+            border: 1px solid #333333; /* Standard neutral border */
             max-width: 400px;
         }
         button {
-            background: #333333;
-            color: white;
+            background: #333333; /* Neutral gray button */
+            color: #ffffff;
             border: none;
             padding: 12px 30px;
             font-size: 1rem;
@@ -137,7 +137,7 @@
                 cell.onclick = () => {
                     if (!active || cell.textContent || cell.classList.contains('outer')) return;
                     cell.textContent = 'X';
-                    cell.style.color = '#888888';
+                    cell.style.color = '#aaaaaa';
                     if (checkWin('X')) return end("well u won, ig u cheated or smth what a pure shame");
                     setTimeout(bot, 200);
                 };
@@ -165,7 +165,7 @@
                     const cEl = get(r, c);
                     if (!isInner(r, c)) {
                         cEl.style.visibility = 'visible';
-                        cEl.style.background = '#1e1e1e';
+                        cEl.style.background = '#1a1a1a';
                         cEl.style.border = '1px solid #333333';
                     }
                     cEl.textContent = 'O';
