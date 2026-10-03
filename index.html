@@ -45,6 +45,7 @@
             justify-content: center;
             align-items: center;
             font-size: 50px;
+            font-weight: bold;
             cursor: pointer;
             user-select: none;
             border-radius: 10px;
@@ -145,7 +146,7 @@
                 cell.onclick = () => {
                     if (!active || cell.textContent || cell.classList.contains('outer')) return;
                     cell.textContent = 'X';
-                    cell.style.color = '#cccccc';
+                    cell.style.color = '#00d2d3'; // Цвет крестиков (Голубой)
                     if (checkWin('X')) return end("well u won, ig u cheated or smth what a pure shame");
                     setTimeout(bot, 200);
                 };
@@ -177,7 +178,7 @@
                         cEl.style.border = '1px solid #222222';
                     }
                     cEl.textContent = 'O';
-                    cEl.style.color = '#ffffff';
+                    cEl.style.color = '#ff4757'; // Цвет ноликов (Красный)
                     return end("LOL u lost to a bot?? such a skill issue");
                 }
             }
@@ -189,7 +190,7 @@
                     const [r, c] = l[v.indexOf('')];
                     const cEl = get(r, c);
                     cEl.textContent = 'O';
-                    cEl.style.color = '#ffffff';
+                    cEl.style.color = '#ff4757'; // Цвет ноликов
                     return;
                 }
             }
@@ -197,7 +198,7 @@
             const center = get(2, 2);
             if (!center.textContent) {
                 center.textContent = 'O';
-                center.style.color = '#ffffff';
+                center.style.color = '#ff4757'; // Цвет ноликов
                 return;
             }
 
@@ -207,7 +208,7 @@
                 const [r, c] = availCorners[Math.floor(Math.random() * availCorners.length)];
                 const target = get(r, c);
                 target.textContent = 'O';
-                target.style.color = '#ffffff';
+                target.style.color = '#ff4757'; // Цвет ноликов
                 return;
             }
             
@@ -221,7 +222,7 @@
                 const [r, c] = avail[Math.floor(Math.random() * avail.length)];
                 const target = get(r,c);
                 target.textContent = 'O';
-                target.style.color = '#ffffff';
+                target.style.color = '#ff4757'; // Цвет ноликов
             } else {
                 end("It's a draw... for now.");
             }
