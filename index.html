@@ -15,7 +15,7 @@
             margin: 0;
             background-color: #121212;
             font-family: 'Segoe UI', sans-serif;
-            color: white;
+            color: #ffffff;
             overflow: hidden;
         }
         h1 {
@@ -24,7 +24,7 @@
             font-size: 2.5rem;
             text-transform: uppercase;
             letter-spacing: 8px;
-            color: #ff4757;
+            color: #ffffff;
         }
         .board {
             display: grid;
@@ -61,7 +61,7 @@
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.85);
             justify-content: center;
             align-items: center;
             z-index: 1000;
@@ -71,11 +71,11 @@
             padding: 40px;
             border-radius: 15px;
             text-align: center;
-            border: 2px solid #ff4757;
+            border: 1px solid #333333;
             max-width: 400px;
         }
         button {
-            background: #ff4757;
+            background: #333333;
             color: white;
             border: none;
             padding: 12px 30px;
@@ -85,6 +85,9 @@
             text-transform: uppercase;
             font-weight: bold;
             border-radius: 4px;
+        }
+        button:hover {
+            background: #444444;
         }
     </style>
 </head>
@@ -134,7 +137,7 @@
                 cell.onclick = () => {
                     if (!active || cell.textContent || cell.classList.contains('outer')) return;
                     cell.textContent = 'X';
-                    cell.style.color = '#00a8ff';
+                    cell.style.color = '#888888';
                     if (checkWin('X')) return end("well u won, ig u cheated or smth what a pure shame");
                     setTimeout(bot, 200);
                 };
