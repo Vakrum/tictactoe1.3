@@ -23,8 +23,8 @@
             overflow: hidden;
         }
         h1 {
-            margin-top: -50px;
-            margin-bottom: 40px;
+            margin-top: -30px;
+            margin-bottom: 30px;
             font-size: 2.5rem;
             text-transform: uppercase;
             letter-spacing: 8px;
@@ -63,7 +63,7 @@
             pointer-events: none;
         }
         .modal {
-            display: none;
+            display: flex;
             position: fixed;
             inset: 0;
             background: rgba(0, 0, 0, 0.9);
@@ -78,8 +78,15 @@
             text-align: center;
             border: 1px solid #333333;
             max-width: 400px;
+            width: 90%;
             box-shadow: none !important;
             outline: none;
+        }
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
         }
         button {
             background: #222222;
@@ -88,12 +95,12 @@
             padding: 12px 30px;
             font-size: 1rem;
             cursor: pointer;
-            margin-top: 20px;
             text-transform: uppercase;
             font-weight: bold;
             border-radius: 4px;
             box-shadow: none !important;
             outline: none;
+            transition: background 0.2s;
         }
         button:hover {
             background: #333333;
@@ -103,12 +110,18 @@
 <body>
     <h1>TIC-TAC-TOE</h1>
     <div class="board" id="board"></div>
+
     <div id="modal" class="modal">
         <div class="modal-content">
-            <h2 id="msg"></h2>
-            <button onclick="init()">Play Again</button>
+            <h2 id="msg">Choose Difficulty</h2>
+            <div class="btn-group">
+                <button onclick="startGame('easy')">Easy</button>
+                <button onclick="startGame('intermediate')">Intermediate</button>
+                <button onclick="startGame('hard')">Hard</button>
+            </div>
         </div>
     </div>
+
     <script>
         const b = document.getElementById('board');
         const m = document.getElementById('modal');
@@ -116,7 +129,8 @@
         const S = 5;
         const W = 3;
         let cells = [];
-        let active = true;
+        let active = false;
+        let difficulty = 'hard';
         const lines = [];
 
         for (let r = 0; r < S; r++) {
@@ -126,6 +140,11 @@
                 if (r <= S - W && c <= S - W) lines.push(Array.from({length: W}, (_, i) => [r + i, c + i]));
                 if (r <= S - W && c >= W - 1) lines.push(Array.from({length: W}, (_, i) => [r + i, c - i]));
             }
+        }
+
+        function startGame(diff) {
+            difficulty = diff;
+            init();
         }
 
         function init() {
@@ -146,7 +165,7 @@
                 cell.onclick = () => {
                     if (!active || cell.textContent || cell.classList.contains('outer')) return;
                     cell.textContent = 'X';
-                    cell.style.color = '#00d2d3'; // Цвет крестиков (Голубой)
+                    cell.style.color = '#00d2d3';
                     if (checkWin('X')) return end("well u won, ig u cheated or smth what a pure shame");
                     setTimeout(bot, 200);
                 };
@@ -160,26 +179,68 @@
         
         function end(s) {
             active = false;
-            setTimeout(() => { t.textContent = s; m.style.display = 'flex'; }, 2500);
+            setTimeout(() => { 
+                t.textContent = s; 
+                m.style.display = 'flex'; 
+            }, 1500);
         }
 
         function bot() {
             if (!active) return;
             const isInner = (r, c) => r >= 1 && r <= 3 && c >= 1 && c <= 3;
 
-            for (let l of lines) {
-                const v = l.map(([r, c]) => get(r, c).textContent);
-                if (v.filter(x => x === 'O').length === W - 1 && v.includes('')) {
-                    const [r, c] = l[v.indexOf('')];
-                    const cEl = get(r, c);
-                    if (!isInner(r, c)) {
-                        cEl.style.visibility = 'visible';
-                        cEl.style.background = '#111111';
-                        cEl.style.border = '1px solid #222222';
+            const getAvailInner = () => {
+                const avail = [];
+                for (let r = 1; r <= 3; r++) {
+                    for (let c = 1; c <= 3; c++) {
+                        if (!get(r, c).textContent) avail.push([r, c]);
                     }
-                    cEl.textContent = 'O';
-                    cEl.style.color = '#ff4757'; // Цвет ноликов (Красный)
-                    return end("LOL u lost to a bot?? such a skill issue");
+                }
+                return avail;
+            };
+
+            const placeO = (r, c) => {
+                const cEl = get(r, c);
+                if (!isInner(r, c)) {
+                    cEl.style.visibility = 'visible';
+                    cEl.style.background = '#111111';
+                    cEl.style.border = '1px solid #222222';
+                }
+                cEl.textContent = 'O';
+                cEl.style.color = '#ff4757';
+            };
+
+            if (difficulty !== 'easy') {
+                for (let l of lines) {
+                    const v = l.map(([r, c]) => get(r, c).textContent);
+                    if (v.filter(x => x === 'O').length === W - 1 && v.includes('')) {
+                        const [r, c] = l[v.indexOf('')];
+                        placeO(r, c);
+                        return end("LOL u lost to a bot?? such a skill issue");
+                    }
+                }
+            }
+
+            if (difficulty === 'easy') {
+                const avail = getAvailInner();
+                if (avail.length > 0) {
+                    const [r, c] = avail[Math.floor(Math.random() * avail.length)];
+                    placeO(r, c);
+                } else {
+                    end("It's a draw... for now.");
+                }
+                return;
+            }
+
+            if (difficulty === 'intermediate') {
+                const shouldBeRandom = Math.random() < 0.5;
+                if (shouldBeRandom) {
+                    const avail = getAvailInner();
+                    if (avail.length > 0) {
+                        const [r, c] = avail[Math.floor(Math.random() * avail.length)];
+                        placeO(r, c);
+                        return;
+                    }
                 }
             }
 
@@ -188,17 +249,14 @@
                 const allInner = l.every(([r, c]) => isInner(r, c));
                 if (allInner && v.filter(x => x === 'X').length === W - 1 && v.includes('')) {
                     const [r, c] = l[v.indexOf('')];
-                    const cEl = get(r, c);
-                    cEl.textContent = 'O';
-                    cEl.style.color = '#ff4757'; // Цвет ноликов
+                    placeO(r, c);
                     return;
                 }
             }
 
             const center = get(2, 2);
             if (!center.textContent) {
-                center.textContent = 'O';
-                center.style.color = '#ff4757'; // Цвет ноликов
+                placeO(2, 2);
                 return;
             }
 
@@ -206,28 +264,18 @@
             const availCorners = innerCorners.filter(([r, c]) => !get(r, c).textContent);
             if (availCorners.length > 0) {
                 const [r, c] = availCorners[Math.floor(Math.random() * availCorners.length)];
-                const target = get(r, c);
-                target.textContent = 'O';
-                target.style.color = '#ff4757'; // Цвет ноликов
+                placeO(r, c);
                 return;
             }
             
-            const avail = [];
-            for (let r = 1; r <= 3; r++) {
-                for (let c = 1; c <= 3; c++) {
-                    if (!get(r,c).textContent) avail.push([r,c]);
-                }
-            }
+            const avail = getAvailInner();
             if (avail.length > 0) {
                 const [r, c] = avail[Math.floor(Math.random() * avail.length)];
-                const target = get(r,c);
-                target.textContent = 'O';
-                target.style.color = '#ff4757'; // Цвет ноликов
+                placeO(r, c);
             } else {
                 end("It's a draw... for now.");
             }
         }
-        init();
     </script>
 </body>
 </html>
